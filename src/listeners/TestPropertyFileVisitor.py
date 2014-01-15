@@ -6,7 +6,7 @@
  * We make no guarantees that this code is fit for any purpose. 
  * Visit http://www.pragmaticprogrammer.com/titles/tpantlr2 for more book information.
 
- Translated to Python by Peter C Marks
+ Translated to Python by Peter C Marks 
 
 """
 
@@ -32,15 +32,18 @@ class PropertyFileVisitor(PropertyFileBaseVisitor):
 		self.props[id] = value
 		return None
 
+def main():
+    ais = ANTLRFileStream(sys.argv[1])
+    lexer = PropertyFileLexer(ais)
+    tokens = CommonTokenStream(lexer)
+    parser = PropertyFileParser(tokens)
+    tree = parser.file()
 
-ais = ANTLRFileStream(sys.argv[1])
-lexer = PropertyFileLexer(ais)
-tokens = CommonTokenStream(lexer)
-parser = PropertyFileParser(tokens)
-tree = parser.file()
+    loader = PropertyFileVisitor()
+    loader.visit(tree)
 
-loader = PropertyFileVisitor()
-loader.visit(tree)
+    print loader.props
 
-print loader.props
-
+if __name__ == '__main__':
+    main()
+    

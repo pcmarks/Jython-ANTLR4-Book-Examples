@@ -19,13 +19,16 @@ from ExtractInterfaceListener import ExtractInterfaceListener
 
 import sys
 
-ais = ANTLRFileStream(sys.argv[1])
-lexer = JavaLexer(ais)
-tokens = CommonTokenStream(lexer)
-parser = JavaParser(tokens);
-tree = parser.compilationUnit()
+def main():
+	ais = ANTLRFileStream(sys.argv[1])
+	lexer = JavaLexer(ais)
+	tokens = CommonTokenStream(lexer)
+	parser = JavaParser(tokens);
+	tree = parser.compilationUnit()
 
-walker = ParseTreeWalker()
-extractor = ExtractInterfaceListener(parser)
-walker.walk(extractor, tree)
+	walker = ParseTreeWalker()
+	extractor = ExtractInterfaceListener(parser)
+	walker.walk(extractor, tree)
 
+if __name__ == '__main__':
+	main()

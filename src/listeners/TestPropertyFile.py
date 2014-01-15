@@ -6,7 +6,7 @@
  * We make no guarantees that this code is fit for any purpose. 
  * Visit http://www.pragmaticprogrammer.com/titles/tpantlr2 for more book information.
 
- Translated to Python by Peter C Marks
+ Translated to Python by Peter C Marks 
 
 """
 
@@ -31,16 +31,19 @@ class PropertyFileLoader(PropertyFileBaseListener):
 		value = ctx.STRING().getText()
 		self.props[id] = value
 
+def main():
+    ais = ANTLRFileStream(sys.argv[1])
+    lexer = PropertyFileLexer(ais)
+    tokens = CommonTokenStream(lexer)
+    parser = PropertyFileParser(tokens)
+    tree = parser.file()
 
-ais = ANTLRFileStream(sys.argv[1])
-lexer = PropertyFileLexer(ais)
-tokens = CommonTokenStream(lexer)
-parser = PropertyFileParser(tokens)
-tree = parser.file()
+    walker = ParseTreeWalker()
 
-walker = ParseTreeWalker()
+    loader = PropertyFileLoader()
+    walker.walk(loader, tree)
+    print loader.props
 
-loader = PropertyFileLoader()
-walker.walk(loader, tree)
-print loader.props
-
+if __name__ == '__main__':
+    main()
+    
