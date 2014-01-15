@@ -22,54 +22,54 @@ import CSVBaseListener
 
 class Loader(CSVBaseListener):
 
-	def __init__(self):
-		self.EMPTY = ""
-		self.rows = [dict()]
-		self.header = []
-		self.currentRowFieldValues = None
+    def __init__(self):
+        self.EMPTY = ""
+        self.rows = [dict()]
+        self.header = []
+        self.currentRowFieldValues = None
 
-	def exitHdr(self, ctx):
-		self.header = []
-		self.header.extend(self.currentRowFieldValues)
+    def exitHdr(self, ctx):
+        self.header = []
+        self.header.extend(self.currentRowFieldValues)
 
-	def enterRow(self, ctx):
-		self.currentRowFieldValues = []
+    def enterRow(self, ctx):
+        self.currentRowFieldValues = []
 
-	def exitRow(self, ctx):
-		if ctx.getParent().getRuleIndex() == CSVParser.RULE_hdr:
-			return None
-		m = dict()
-		i = 0
-		for v in self.currentRowFieldValues:
-			m[self.header[i]] = v
-			i = i + 1
-		self.rows.append(m)
+    def exitRow(self, ctx):
+        if ctx.getParent().getRuleIndex() == CSVParser.RULE_hdr:
+            return None
+        m = dict()
+        i = 0
+        for v in self.currentRowFieldValues:
+            m[self.header[i]] = v
+            i = i + 1
+        self.rows.append(m)
 
-	def exitString(self, ctx):
-		self.currentRowFieldValues.append(ctx.STRING().getText())
+    def exitString(self, ctx):
+        self.currentRowFieldValues.append(ctx.STRING().getText())
 
-	def exitText(self, ctx):
-		self.currentRowFieldValues.append(ctx.TEXT().getText())
+    def exitText(self, ctx):
+        self.currentRowFieldValues.append(ctx.TEXT().getText())
 
-	def exitEmpty(self, ctx):
-		self.currentRowFieldValues.append(self.EMPTY)
+    def exitEmpty(self, ctx):
+        self.currentRowFieldValues.append(self.EMPTY)
 
 def main():
-	ais = ANTLRFileStream(sys.argv[1])
-	lexer = CSVLexer(ais)
-	tokens = CommonTokenStream(lexer)
-	parser = CSVParser(tokens)
-	parser.setBuildParseTree(True)
-	tree = parser.file()
+    ais = ANTLRFileStream(sys.argv[1])
+    lexer = CSVLexer(ais)
+    tokens = CommonTokenStream(lexer)
+    parser = CSVParser(tokens)
+    parser.setBuildParseTree(True)
+    tree = parser.file()
 
-	print tree.toStringTree(parser)
+    print tree.toStringTree(parser)
 
-	walker = ParseTreeWalker()
-	loader = Loader()
-	walker.walk(loader, tree)
-	for row in loader.rows:
-		print row
+    walker = ParseTreeWalker()
+    loader = Loader()
+    walker.walk(loader, tree)
+    for row in loader.rows:
+	    print row
 
 if __name__ == '__main__':
-	main()
+    main()
 

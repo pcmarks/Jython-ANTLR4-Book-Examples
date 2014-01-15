@@ -20,15 +20,15 @@ from EvalVisitor import EvalVisitor
 import sys
 
 def main():
-	ais = ANTLRFileStream(sys.argv[1])
-	lexer = LabeledExprLexer(ais)
-	tokens = CommonTokenStream(lexer)
-	parser = LabeledExprParser(tokens);
-	tree = parser.prog()
+    ais = ANTLRFileStream(sys.argv[1])
+    lexer = LabeledExprLexer(ais)
+    tokens = CommonTokenStream(lexer)
+    parser = LabeledExprParser(tokens);
+    tree = parser.prog()
 
-	eval = EvalVisitor()
-	eval.visit(tree)
+    eval = EvalVisitor()
+    eval.visit(tree)
 
 if __name__ == '__main__':
-	main()
+    main()
 

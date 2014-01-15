@@ -20,15 +20,15 @@ import JavaParser
 from InsertSerialIDListener import InsertSerialIDListener
 
 def main():
-	ais = ANTLRFileStream(sys.argv[1])
-	lexer = JavaLexer(ais)
-	tokens = CommonTokenStream(lexer)
-	parser = JavaParser(tokens)
-	tree = parser.compilationUnit()
-	walker = ParseTreeWalker()
-	extractor = InsertSerialIDListener(tokens)
-	walker.walk(extractor, tree)
-	print extractor.rewriter.getText()
+    ais = ANTLRFileStream(sys.argv[1])
+    lexer = JavaLexer(ais)
+    tokens = CommonTokenStream(lexer)
+    parser = JavaParser(tokens)
+    tree = parser.compilationUnit()
+    walker = ParseTreeWalker()
+    extractor = InsertSerialIDListener(tokens)
+    walker.walk(extractor, tree)
+    print extractor.rewriter.getText()
 
 if __name__ == '__main__':
-	main()
+    main()

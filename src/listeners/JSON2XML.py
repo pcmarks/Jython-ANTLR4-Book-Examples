@@ -23,76 +23,76 @@ import JSONBaseListener
 
 class XMLEmitter(JSONBaseListener):
 
-	def __init__(self):
-		self.xml = ParseTreeProperty()
-		
-	def getXML(self, ctx):
-		return self.xml.get(ctx)
+    def __init__(self):
+        self.xml = ParseTreeProperty()
 
-	def setXML(self, ctx, s):
-#		print "setXML(", ctx,",", s, ")"
-		self.xml.put(ctx, s)
+    def getXML(self, ctx):
+        return self.xml.get(ctx)
 
-	def exitJson(self, ctx):
-		self.setXML(ctx, self.getXML(ctx.getChild(0)))
+    def setXML(self, ctx, s):
+    #		print "setXML(", ctx,",", s, ")"
+        self.xml.put(ctx, s)
 
-	def exitAnObject(self, ctx):
-		buf = "\n"
-		for pctx in ctx.pair():
-			buf = ''.join(self.getXML(pctx))
-		self.setXML(ctx, buf)
+    def exitJson(self, ctx):
+        self.setXML(ctx, self.getXML(ctx.getChild(0)))
 
-	def exitEmptyObject(self, ctx):
-		self.setXML(ctx, "")
+    def exitAnObject(self, ctx):
+        buf = "\n"
+        for pctx in ctx.pair():
+            buf = ''.join(self.getXML(pctx))
+        self.setXML(ctx, buf)
 
-	def exitArrayOfValues(self, ctx):
-		buf = "\n"
-		for vctx in ctx.value():
-			buf = ''.join(["<element>", self.getXML(vctx), "</element>", "\n"])
-		self.setXML(ctx, buf)
+    def exitEmptyObject(self, ctx):
+        self.setXML(ctx, "")
 
-	def exitEmptyArray(self, ctx):
-		self.setXML(ctx, "")
+    def exitArrayOfValues(self, ctx):
+        buf = "\n"
+        for vctx in ctx.value():
+            buf = ''.join(["<element>", self.getXML(vctx), "</element>", "\n"])
+        self.setXML(ctx, buf)
 
-	def exitPair(self, ctx):
-		tag = self.stripQuotes(ctx.STRING().getText())
-		vctx = ctx.value()
-		x = "<%s>%s</%s>\n" % (tag, self.getXML(vctx), tag)
-		self.setXML(ctx, x)
+    def exitEmptyArray(self, ctx):
+        self.setXML(ctx, "")
 
-	def exitObjectValue(self, ctx):
-		self.setXML(ctx, self.getXML(ctx.object()))
+    def exitPair(self, ctx):
+        tag = self.stripQuotes(ctx.STRING().getText())
+        vctx = ctx.value()
+        x = "<%s>%s</%s>\n" % (tag, self.getXML(vctx), tag)
+        self.setXML(ctx, x)
 
-	def exitArrayValue(self, ctx):
-		self.setXML(ctx, self.getXML(ctx.array()))
+    def exitObjectValue(self, ctx):
+        self.setXML(ctx, self.getXML(ctx.object()))
 
-	def exitAtom(self, ctx):
-		self.setXML(ctx, ctx.getText())
+    def exitArrayValue(self, ctx):
+        self.setXML(ctx, self.getXML(ctx.array()))
 
-	def exitString(self, ctx):
-		self.setXML(ctx, self.stripQuotes(ctx.getText()))
+    def exitAtom(self, ctx):
+        self.setXML(ctx, ctx.getText())
 
-	def stripQuotes(self, s):
-		if s == None or s[0] != '"':
-			return s
-		return s[1:-1]	
+    def exitString(self, ctx):
+        self.setXML(ctx, self.stripQuotes(ctx.getText()))
+
+    def stripQuotes(self, s):
+        if s == None or s[0] != '"':
+            return s
+        return s[1:-1]	
 
 def main():
-	ais = ANTLRFileStream(sys.argv[1])
-	lexer = JSONLexer(ais)
-	tokens = CommonTokenStream(lexer)
-	parser = JSONParser(tokens)
-	parser.setBuildParseTree(True)
-	tree = parser.json()
-	print tree
-	#print tree.toStringTree(parser)
+    ais = ANTLRFileStream(sys.argv[1])
+    lexer = JSONLexer(ais)
+    tokens = CommonTokenStream(lexer)
+    parser = JSONParser(tokens)
+    parser.setBuildParseTree(True)
+    tree = parser.json()
+    print tree
+    #print tree.toStringTree(parser)
 
-	walker = ParseTreeWalker()
-	converter = XMLEmitter()
-	walker.walk(converter, tree)
-	print tree
-	#print converter.getXML(tree)
+    walker = ParseTreeWalker()
+    converter = XMLEmitter()
+    walker.walk(converter, tree)
+    print tree
+    #print converter.getXML(tree)
 
 if __name__ == '__main__':
-	main()
+    main()
 

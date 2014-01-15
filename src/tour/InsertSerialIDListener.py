@@ -17,11 +17,11 @@ import JavaBaseListener
 
 class InsertSerialIDListener(JavaBaseListener):
 
-	def __init__(self, tokens):
-		self.rewriter = TokenStreamRewriter(tokens)
+    def __init__(self, tokens):
+        self.rewriter = TokenStreamRewriter(tokens)
 
-	def enterClassBody(self, ctx):
-		field = "\n\tpublic static final long serialVersionUID = 1L;"
-		self.rewriter.insertAfter(ctx.start, field)
+    def enterClassBody(self, ctx):
+        field = "\n\tpublic static final long serialVersionUID = 1L;"
+        self.rewriter.insertAfter(ctx.start, field)
 
 

@@ -23,14 +23,14 @@ import PropertyFileParser
 
 class PropertyFileVisitor(PropertyFileBaseVisitor):
 
-	def __init__(self):
-		self.props = dict()
+    def __init__(self):
+        self.props = dict()
 
-	def visitProp(self, ctx):
-		id = ctx.ID().getText()		# prop : ID '=' STRING '\n' ;
-		value = ctx.STRING().getText()
-		self.props[id] = value
-		return None
+    def visitProp(self, ctx):
+        id = ctx.ID().getText()		# prop : ID '=' STRING '\n' ;
+        value = ctx.STRING().getText()
+        self.props[id] = value
+        return None
 
 def main():
     ais = ANTLRFileStream(sys.argv[1])

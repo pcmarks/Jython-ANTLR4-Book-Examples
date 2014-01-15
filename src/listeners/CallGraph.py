@@ -22,58 +22,58 @@ import CymbolParser
 import CymbolBaseListener
 
 class Graph():
-	
-	def __init__(self):
-		self.nodes = []
-		self.edges = MultiMap()
 
-	def edge(self, source, target):
-		self.edges.map(source, target)
+    def __init__(self):
+        self.nodes = []
+        self.edges = MultiMap()
 
-	def toString(self):
-		return "edges: %s, functions: %s" % (self.edges.toString(), self.nodes)
+    def edge(self, source, target):
+        self.edges.map(source, target)
 
-	def toDOT(self):
-		buf = ''.join(["digraph G{\n", "  ranksep=.25;\n", "  edge [arrowsize=.5]\n",
-						"  node [shape=circle, fontname=\"ArialNarrow\",\n",
-						"        fontsize=12, fixedsize=true, height=.45];\n", "  "])
-		for src in self.edges.keySet():
-			for trg in self.edges.get(src):
-				buf = ''.join([buf, "  ", src, " -> ", trg, ";\n"])
-		buf = buf + "}\n"
-		return buf
+    def toString(self):
+        return "edges: %s, functions: %s" % (self.edges.toString(), self.nodes)
+
+    def toDOT(self):
+        buf = ''.join(["digraph G{\n", "  ranksep=.25;\n", "  edge [arrowsize=.5]\n",
+                        "  node [shape=circle, fontname=\"ArialNarrow\",\n",
+                        "        fontsize=12, fixedsize=true, height=.45];\n", "  "])
+        for src in self.edges.keySet():
+            for trg in self.edges.get(src):
+                buf = ''.join([buf, "  ", src, " -> ", trg, ";\n"])
+        buf = buf + "}\n"
+        return buf
 
 class FunctionListener(CymbolBaseListener):
 
-	def __init__(self):
-		self.graph = Graph()
-		self.currentFunctionName = None
+    def __init__(self):
+        self.graph = Graph()
+        self.currentFunctionName = None
 
-	def enterFunctionDecl(self, ctx):
-		self.currentFunctionName = ctx.ID().getText()
-		self.graph.nodes.append(self.currentFunctionName)
+    def enterFunctionDecl(self, ctx):
+        self.currentFunctionName = ctx.ID().getText()
+        self.graph.nodes.append(self.currentFunctionName)
 
-	def exitCall(self, ctx):
-		funcName = ctx.ID().getText()
-		self.graph.edge(self.currentFunctionName, funcName)
+    def exitCall(self, ctx):
+        funcName = ctx.ID().getText()
+        self.graph.edge(self.currentFunctionName, funcName)
 
 def main():
-	ais = ANTLRFileStream(sys.argv[1])
-	lexer = CymbolLexer(ais)
-	tokens = CommonTokenStream(lexer)
-	parser = CymbolParser(tokens)
-	parser.setBuildParseTree(True)
-	tree = parser.file()
+    ais = ANTLRFileStream(sys.argv[1])
+    lexer = CymbolLexer(ais)
+    tokens = CommonTokenStream(lexer)
+    parser = CymbolParser(tokens)
+    parser.setBuildParseTree(True)
+    tree = parser.file()
 
-	#print tree.toStringTree(parser)
+    #print tree.toStringTree(parser)
 
-	walker = ParseTreeWalker()
-	collector = FunctionListener()
-	walker.walk(collector, tree)
-	#print collector.graph.toString()
-	print collector.graph.toDOT()
+    walker = ParseTreeWalker()
+    collector = FunctionListener()
+    walker.walk(collector, tree)
+    #print collector.graph.toString()
+    print collector.graph.toDOT()
 
 
 if __name__ == '__main__':
-	main()
+    main()
 
